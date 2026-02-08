@@ -1,19 +1,26 @@
 import type { Request, Response, NextFunction } from "express";
 import AuthService from "../services/authService.ts";
+import { accessTokenConfig, refreshTokenConfig } from "../utils/cookieConfig.ts";
 
-export async function SignupController(req: Request, res: Response, next: NextFunction){
+export async function SignupController(req: Request, res: Response, next: NextFunction) {
     const { email, password, name } = req.body;
-    
-    try{
-        const { createdUser } = await AuthService.register({
-                email: email, 
-                password: password, 
-                provider: 'local', 
+
+    try {
+        const { createdUser, access_token, refresh_token } = await AuthService.register(
+            {
+                email: email,
+                password: password,
+                provider: 'local',
                 name: name
-            });
-        res.json({createdUser});
-    }catch(err){
-        console.log(err);
+            }
+        );
+
+        res.cookie("access_token", access_token, accessTokenConfig);
+        res.cookie("refresh_token", refresh_token, refreshTokenConfig);
+
+        res.json({ createdUser });
+
+    } catch (err) {
         next(err);
     }
 

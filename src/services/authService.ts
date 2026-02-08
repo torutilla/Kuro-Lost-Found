@@ -43,8 +43,9 @@ export default class AuthService {
         }
 
         const createdUser = await UserModel.createOAuthUser(input);
-
-        return { createdUser };
+        const access_token = TokenService.generateAccessToken({ userId: createdUser.id });
+        const refresh_token = TokenService.generateRefreshToken({ userId: createdUser.id });
+        return { createdUser, access_token, refresh_token };
     }
 
     static async handleGoogleCallback(code: string) {
