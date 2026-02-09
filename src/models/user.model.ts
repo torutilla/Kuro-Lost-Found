@@ -24,14 +24,29 @@ export default class UserModel {
     }
 
     static async createOAuthUser(
-        { email, provider, providerId, name }: GoogleUserInput
+        { email, providerId, name }: GoogleUserInput
     ): Promise<PublicUser> {
         const res = await pool.query(
-            `INSERT INTO users (email, provider, provider_id)
-            VALUES ($1, $2, $3, $4)
+            `INSERT INTO users (email, provider, provider_id, name)
+            VALUES ($1, 'google', $2, $3)
             RETURNING id, email, provider, avatar, name`,
-            [email, provider, providerId, name]
+            [email, providerId, name]
         );
         return res.rows[0];
+    }
+
+    static async findByProviderId(provider: string, providerId: string): Promise<PublicUser | null> {
+        const res = await pool.query(
+            `SELECT id, email, provider, name, avatar
+            FROM users 
+            WHERE provider=$1 AND provider_id=$2`,
+            [provider, providerId]
+        );
+        return res.rows[0] ?? null;
+    }
+
+    static isUniqueEmailError(error: any) {
+        return error?.code === "23505"
+            && error?.constraint === "users_email_unique";
     }
 }

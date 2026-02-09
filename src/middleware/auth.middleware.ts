@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import TokenService from "../services/tokenService.ts";
+import TokenService from "../services/token.service.ts";
 import { UserPayload } from "../types/express";
 import { AppError } from "../utils/errors.ts";
 

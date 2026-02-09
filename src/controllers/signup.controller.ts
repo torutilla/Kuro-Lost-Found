@@ -10,7 +10,6 @@ export async function SignupController(req: Request, res: Response, next: NextFu
             {
                 email: email,
                 password: password,
-                provider: 'local',
                 name: name
             }
         );
