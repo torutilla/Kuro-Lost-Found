@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import AuthService from "../services/authService.ts";
+import AuthService from "../services/auth.service.ts";
 import { accessTokenConfig, refreshTokenConfig } from "../utils/cookieConfig.ts";
 
 export default async function LoginController(req: Request, res: Response, next: NextFunction) {

@@ -1,9 +1,9 @@
-import TokenService from "../services/tokenService.ts";
-import PasswordService from "./passwordService.ts";
-import UserModel from "../models/userModel.ts";
+import TokenService from "./token.service.ts";
+import PasswordService from "./password.service.ts";
+import UserModel from "../models/user.model.ts";
 import { AppError } from "../utils/errors.ts";
-import type { RegisterInput } from "../types/registerInput.ts";
-import type { PublicUser } from "../types/userType.ts";
+import type { RegisterInput } from "../types/registerInput.type.ts";
+import type { PublicUser } from "../types/user.type.ts";
 export default class AuthService {
 
     static async login(email: string, password: string) {

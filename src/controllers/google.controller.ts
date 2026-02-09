@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import TokenService from "../services/tokenService.ts";
-import AuthService from "../services/authService.ts";
+import TokenService from "../services/token.service.ts";
+import AuthService from "../services/auth.service.ts";
 import { accessTokenConfig, refreshTokenConfig } from "../utils/cookieConfig.ts";
 export function googleController(req: Request, res: Response) {
     const redirectUrl =
