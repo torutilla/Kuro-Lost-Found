@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { googleCallbackController, googleController } from "../controllers/googleController.ts";
+import { googleCallbackController, googleController } from "../controllers/google.controller.ts";
 
 const router = Router();
 

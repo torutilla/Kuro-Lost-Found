@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import TokenService from "../services/token.service.ts";
-import { UserPayload } from "../types/express";
+import type { UserPayload } from "../types/express";
 import { AppError } from "../utils/errors.ts";
 
 export default function authMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -13,7 +13,6 @@ export default function authMiddleware(req: Request, res: Response, next: NextFu
         next();
     } catch (err) {
         next(err);
-        res.redirect("/login");
     }
 
 }

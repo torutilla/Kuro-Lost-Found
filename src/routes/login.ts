@@ -1,5 +1,5 @@
 import { Router } from "express";
-import LoginController from "../controllers/loginController.ts";
+import LoginController from "../controllers/login.controller.ts";
 const router = Router();
 
 router.post("/", LoginController);

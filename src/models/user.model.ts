@@ -4,6 +4,15 @@ import type { PublicUser, UserRow } from "../types/user.type.ts";
 
 export default class UserModel {
 
+    static async findById(id: string): Promise<PublicUser | null> {
+        const result = await pool.query(
+            `SELECT id, email, provider, name, avatar
+            FROM users 
+            WHERE id=$1`,
+            [id]);
+        return result.rows[0] ?? null;
+    }
+
     static async findEmail(email: string): Promise<UserRow | null> {
         const result = await pool.query(
             `SELECT id, email, hash, provider, name, avatar
