@@ -13,6 +13,9 @@ export default class TokenService {
         return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "7d" });
     }
 
+    static async revokeRefreshToken(token: string) {
+    }
+
     static verifyRefreshToken(token: string) {
         return jwt.verify(token, process.env.JWT_SECRET!)
     }

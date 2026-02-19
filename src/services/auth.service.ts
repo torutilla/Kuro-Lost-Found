@@ -33,6 +33,24 @@ export default class AuthService {
         return { accessToken, refreshToken, user: publicUser }
     }
 
+    static async getUserFromId(id: string) {
+        const user = await UserModel.findById(id);
+        if (!user) {
+            throw new AppError("User not found.", 404);
+        }
+        const publicUser: PublicUser = {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            provider: user.provider,
+            avatar: user.avatar,
+        }
+        return publicUser;
+    }
+    static async logout(refreshToken: string) {
+        await TokenService.revokeRefreshToken(refreshToken);
+    }
+
     static async register(input: LocalUserInput) {
         const normalizedEmail = normalizeEmail(input.email);
         const normalizedInputName = normalizeName(input.name);
