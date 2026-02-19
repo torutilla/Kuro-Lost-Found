@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import TokenService from "../services/token.service.ts";
-import type { UserPayload } from "../types/express";
+import TokenService from "../../features/auth/services/token.service.ts";
+import type { UserPayload } from "../types/express.js";
 import { AppError } from "../utils/errors.ts";
 
 export default function authMiddleware(req: Request, res: Response, next: NextFunction) {

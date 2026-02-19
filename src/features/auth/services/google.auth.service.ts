@@ -20,3 +20,5 @@ class GoogleAuthService {
         return profileRes;
     }
 }
+
+export default GoogleAuthService;

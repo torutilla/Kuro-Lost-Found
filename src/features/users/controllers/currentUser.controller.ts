@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import TokenService from "../services/token.service.ts";
-import AuthService from "../services/auth.service.ts";
-import type { UserPayload } from "../types/express";
+import TokenService from "@features/auth/services/token.service.ts";
+import AuthService from "@features/auth/services/auth.service.ts";
+import type { UserPayload } from "@shared/types/express.js";
 async function getCurrentUserController(req: Request, res: Response, next: NextFunction) {
     try {
 

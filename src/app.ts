@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
-import errorMiddleware from "./middleware/error.middleware.ts";
+import errorMiddleware from "@shared/middleware/error.middleware.ts";
 import cookieParser from "cookie-parser";
-import loginRouter from "./routes/login.ts";
-import signupRouter from "./routes/signup.ts"
-import userRouter from "./routes/users.ts";
-import oauthRouter from "./routes/oauth.ts";
-import homeRouter from "./routes/home.route.ts";
+import loginRouter from "@features/auth/routes/login.ts";
+import signupRouter from "@features/auth/routes/signup.ts"
+import userRouter from "@features/users/routes/users.ts";
+import oauthRouter from "@features/auth/routes/oauth.ts";
+import homeRouter from "@features/pets/routes/home.route.ts";
 const app = express();
 
 app.use(cookieParser());

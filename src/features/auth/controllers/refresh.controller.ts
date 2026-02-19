@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import { AppError } from "../utils/errors.ts";
-import { UserPayload } from "../types/express";
+import type { NextFunction, Request, Response } from "express";
+import { AppError } from "@shared/utils/errors.ts";
+import type { UserPayload } from "@shared/types/express.js";
 import TokenService from "../services/token.service.ts";
 import AuthService from "../services/auth.service.ts";
 function refreshController(req: Request, res: Response, next: NextFunction) {

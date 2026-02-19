@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import AuthService from "../services/auth.service.ts";
-import { accessTokenConfig, refreshTokenConfig } from "../utils/cookieConfig.ts";
+import { accessTokenConfig, refreshTokenConfig } from "@shared/utils/cookieConfig.ts";
 
 export async function SignupController(req: Request, res: Response, next: NextFunction) {
     const { email, password, name } = req.body;
