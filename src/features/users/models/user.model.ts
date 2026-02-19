@@ -1,6 +1,6 @@
-import { pool } from "@/db.ts";
-import type { GoogleUserInput, LocalUserInput } from "@features/auth/types/registerInput.type.ts";
-import type { PublicUser, UserRow } from "../types/user.type.ts";
+import { pool } from "@/db.js";
+import type { GoogleUserInput, LocalUserInput } from "@features/auth/types/registerInput.type.js";
+import type { PublicUser, UserRow } from "../types/user.type.js";
 
 export default class UserModel {
 

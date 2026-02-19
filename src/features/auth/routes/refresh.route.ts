@@ -1,5 +1,5 @@
 import { Router } from "express";
-import refreshController from "../controllers/refresh.controller.ts";
+import refreshController from "../controllers/refresh.controller.js";
 const router = Router();
 router.post("/", refreshController);
 

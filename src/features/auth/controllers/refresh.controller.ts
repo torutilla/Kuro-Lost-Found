@@ -1,8 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { AppError } from "@shared/utils/errors.ts";
+import { AppError } from "@shared/utils/errors.js";
 import type { UserPayload } from "@shared/types/express.js";
-import TokenService from "../services/token.service.ts";
-import AuthService from "../services/auth.service.ts";
+import TokenService from "../services/token.service.js";
+import { accessTokenConfig, refreshTokenConfig } from "@shared/utils/cookieConfig.js";
+
 function refreshController(req: Request, res: Response, next: NextFunction) {
     try {
         const { refresh_token } = req.cookies;
@@ -15,13 +16,11 @@ function refreshController(req: Request, res: Response, next: NextFunction) {
 
         const userId = payload.userId;
 
-        const user = AuthService.getUserFromId(userId);
+        const newAccessToken = TokenService.generateAccessToken({ userId });
+        const newRefreshToken = TokenService.generateRefreshToken({ userId });
 
-        if (!user) {
-            throw new Error("User not found");
-        }
-
-        res.json(user);
+        res.cookie("access_token", newAccessToken, accessTokenConfig);
+        res.cookie("refresh_token", newRefreshToken, refreshTokenConfig);
 
     } catch (error) {
         next(error);

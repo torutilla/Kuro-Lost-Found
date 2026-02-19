@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
-import errorMiddleware from "@shared/middleware/error.middleware.ts";
 import cookieParser from "cookie-parser";
-import loginRouter from "@features/auth/routes/login.ts";
-import signupRouter from "@features/auth/routes/signup.ts"
-import userRouter from "@features/users/routes/users.ts";
-import oauthRouter from "@features/auth/routes/oauth.ts";
-import homeRouter from "@features/pets/routes/home.route.ts";
+import loginRouter from "@features/auth/routes/login.js";
+import signupRouter from "@features/auth/routes/signup.js"
+import userRouter from "@features/users/routes/users.js";
+import oauthRouter from "@features/auth/routes/oauth.js";
+import homeRouter from "@/features/home/routes/home.route.js";
+import refreshRouter from "@features/auth/routes/refresh.route.js";
+import errorMiddleware from "@shared/middleware/error.middleware.js";
 const app = express();
 
 app.use(cookieParser());
@@ -19,7 +20,7 @@ app.use(cors({
 app.use('/auth', oauthRouter);
 app.use('/auth/login', loginRouter);
 app.use('/auth/signup', signupRouter);
-app.use("/auth/refresh", oauthRouter);
+app.use("/auth/refresh", refreshRouter);
 
 app.use('/users', userRouter);
 

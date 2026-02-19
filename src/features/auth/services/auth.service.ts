@@ -1,11 +1,11 @@
-import TokenService from "./token.service.ts";
-import PasswordService from "./password.service.ts";
-import UserModel from "@features/users/models/user.model.ts";
-import GoogleAuthService from "./google.auth.service.ts";
-import { AppError } from "@shared/utils/errors.ts";
-import type { LocalUserInput } from "../types/registerInput.type.ts";
-import type { PublicUser } from "@features/users/types/user.type.ts";
-import { normalizeEmail, normalizeName } from "@shared/utils/normalize.ts";
+import TokenService from "./token.service.js";
+import PasswordService from "./password.service.js";
+import UserModel from "@features/users/models/user.model.js";
+import GoogleAuthService from "./google.auth.service.js";
+import { AppError } from "@shared/utils/errors.js";
+import type { LocalUserInput } from "../types/registerInput.type.js";
+import type { PublicUser } from "@features/users/types/user.type.js";
+import { normalizeEmail, normalizeName } from "@shared/utils/normalize.js";
 export default class AuthService {
 
     static async login(email: string, password: string) {

@@ -1,7 +1,6 @@
-
-import app from "./src/app.ts";
+import app from "./app.js";
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, ()=>{
+app.listen(PORT, () => {
     console.log(`listening to ${PORT}`);
 })
