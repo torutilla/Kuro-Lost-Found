@@ -1,3 +1,4 @@
+import { env } from "@shared/config/env.js";
 class GoogleAuthService {
     static async exchangeCodeForTokens(code: string) {
         return await fetch("https://oauth2.googleapis.com/token", {
@@ -5,9 +6,9 @@ class GoogleAuthService {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({
                 code,
-                client_id: process.env.GOOGLE_CLIENT_ID!,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-                redirect_uri: `${process.env.SERVER_URL}/auth/google/callback`,
+                client_id: env.GOOGLE_CLIENT_ID,
+                client_secret: env.GOOGLE_CLIENT_SECRET,
+                redirect_uri: `${env.SERVER_URL}/auth/google/callback`,
                 grant_type: "authorization_code",
             }),
         });

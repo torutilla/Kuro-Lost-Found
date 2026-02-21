@@ -11,7 +11,7 @@ function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunc
             errors: err.flatten(),
         });
     }
-    console.log(err.message);
+    console.error(err.message);
     return res.status(500).json({
         message: "Internal server error",
     });

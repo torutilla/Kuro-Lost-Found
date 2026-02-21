@@ -1,6 +1,6 @@
 import app from "./app.js";
-
-const PORT = process.env.PORT || 8080;
+import { env } from "@shared/config/env.js";
+const PORT = env.PORT;
 app.listen(PORT, () => {
     console.log(`listening to ${PORT}`);
 })

@@ -7,7 +7,13 @@ export const validateMiddleware = (schema: AnyZodObject, source: "body" | "query
         if (!result.success) {
             next(result.error);
         }
-        req[source] = result.data;
+
+        if (source === "query" || source === "params") {
+            for (const key in req.query) delete req.query[key];
+            Object.assign(req[source], result.data);
+        } else {
+            req[source] = result.data;
+        }
         next();
 
 

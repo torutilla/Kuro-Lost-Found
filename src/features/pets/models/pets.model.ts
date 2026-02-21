@@ -14,7 +14,7 @@ export default class PetModel {
 
         if (status != "all") {
             params.push(status);
-            conditions.push(`status = $2${params.length}`);
+            conditions.push(`status = $${params.length}`);
         }
         if (lastDateLost) {
             params.push(lastDateLost);
@@ -28,7 +28,7 @@ export default class PetModel {
         if (conditions.length > 0) {
             baseQuery += " WHERE " + conditions.join(" AND ");
         }
-        baseQuery += `ORDER BY date_lost DESC LIMIT $1`;
+        baseQuery += ` ORDER BY date_lost DESC LIMIT $1`;
 
         const res: QueryResult<Pet> = await pool.query(baseQuery, params);
 
@@ -72,6 +72,14 @@ export default class PetModel {
             FROM pets
             WHERE id = $1`, [id]);
         return res.rows[0] ?? null;
+    }
+
+    static async getPostedPets(user_id: string): Promise<Pet[] | null> {
+        const res = await pool.query(`
+            SELECT * 
+            FROM pets
+            WHERE user_id = $1`, [user_id]);
+        return res.rows;
     }
 
     static async deletePet(id: string) {

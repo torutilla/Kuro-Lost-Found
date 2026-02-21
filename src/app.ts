@@ -8,12 +8,13 @@ import oauthRouter from "@features/auth/routes/oauth.js";
 import refreshRouter from "@features/auth/routes/refresh.route.js";
 import errorMiddleware from "@shared/middleware/error.middleware.js";
 import petsRouter from "@features/pets/routes/pets.route.js";
+import { env } from "@shared/config/env.js";
 const app = express();
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-    origin: `${process.env.CLIENT_URL}`,
+    origin: `${env.CLIENT_URL}`,
     credentials: true,
 }))
 
