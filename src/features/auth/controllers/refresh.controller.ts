@@ -22,6 +22,7 @@ function refreshController(req: Request, res: Response, next: NextFunction) {
         res.cookie("access_token", newAccessToken, accessTokenConfig);
         res.cookie("refresh_token", newRefreshToken, refreshTokenConfig);
 
+        res.status(200).json({ message: "refreshed" });
     } catch (error) {
         next(error);
     }

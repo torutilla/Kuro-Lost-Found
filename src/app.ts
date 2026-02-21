@@ -5,9 +5,9 @@ import loginRouter from "@features/auth/routes/login.js";
 import signupRouter from "@features/auth/routes/signup.js"
 import userRouter from "@features/users/routes/users.js";
 import oauthRouter from "@features/auth/routes/oauth.js";
-import homeRouter from "@features/pets/routes/pets.route.js";
 import refreshRouter from "@features/auth/routes/refresh.route.js";
 import errorMiddleware from "@shared/middleware/error.middleware.js";
+import petsRouter from "@features/pets/routes/pets.route.js";
 const app = express();
 
 app.use(cookieParser());
@@ -24,6 +24,7 @@ app.use("/auth/refresh", refreshRouter);
 
 app.use('/users', userRouter);
 
-app.use("/", homeRouter);
+app.use('/pets', petsRouter);
+
 app.use(errorMiddleware);
 export default app; 

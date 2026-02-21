@@ -1,21 +1,13 @@
 import { pool } from "@/db.js";
-import { Pet, PetResponse } from "../types/pets.type.js";
+import { Pet, PetResponse, GetPetsOptions } from "../types/pets.type.js";
 import { QueryResult } from "pg";
 
 export default class PetModel {
 
-    static async getLostPets(lastDateLost?: string, limit?: number): Promise<PetResponse> {
-        return this.getPets(lastDateLost, "lost", limit)
-    }
-
-    static async getFoundPets(lastDateLost?: string, limit?: number): Promise<PetResponse> {
-        return this.getPets(lastDateLost, "found", limit)
-    }
-
-    static async getPets(
-        lastDateLost?: string,
-        status: "lost" | "found" | "all" = "all",
-        limit: number = 10,
+    static async getPets({
+        limit = 10,
+        lastDateLost,
+        status = "all" }: GetPetsOptions
     ): Promise<PetResponse> {
         let params: any[] = [limit];
         let conditions: string[] = [];
