@@ -1,11 +1,12 @@
 import { Router } from "express";
-import authMiddleware from "@shared/middleware/auth.middleware.js";
-import getPetsController from "../controllers/pets.controller.js";
-import { validateMiddleware } from "../../../shared/middleware/validate.middleware.js";
-import { GetPetsQuerySchema, PetParamsSchema } from "../schema/pets.schema.js";
+import { getPetsController } from "../controllers/getPets.controller.js";
+import { validateMiddleware, authMiddleware } from "@shared/middleware/index.js";
+import { postPetController } from "../controllers/postPet.controller.js";
+import { GetPetsQuerySchema, PetParamsSchema } from "../index.js";
 
 const router = Router();
 
 router.get("/", authMiddleware, validateMiddleware(GetPetsQuerySchema, "query"), getPetsController);
-router.post("/:id", authMiddleware, validateMiddleware(PetParamsSchema, "params"));
+router.get("/:id", authMiddleware, validateMiddleware(PetParamsSchema, "params"));
+router.post("/create", authMiddleware, postPetController);
 export default router;
