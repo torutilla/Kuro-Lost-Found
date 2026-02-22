@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import AuthService from "@features/auth/services/auth.service.js";
+import UserService from "../services/user.service.js";
 
 async function getCurrentUserController(req: Request, res: Response, next: NextFunction) {
     try {
@@ -7,7 +7,7 @@ async function getCurrentUserController(req: Request, res: Response, next: NextF
         if (!payload) {
             throw new Error("User payload missing in request");
         }
-        const user = await AuthService.getUserFromId(payload.userId);
+        const user = await UserService.getUserFromId(payload.userId);
         res.json(user);
     } catch (error) {
         console.error("ERROR IN /me:", error);

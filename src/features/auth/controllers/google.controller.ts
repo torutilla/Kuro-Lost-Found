@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import AuthService from "../services/auth.service.js";
-import { accessTokenConfig, refreshTokenConfig } from "@shared/utils/cookieConfig.js";
+import { accessTokenConfig, refreshTokenConfig } from "@shared/index.js";
 export function googleController(req: Request, res: Response) {
     const redirectUrl =
         "https://accounts.google.com/o/oauth2/v2/auth?" +

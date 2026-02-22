@@ -16,11 +16,15 @@ export type Pet = {
 
 export type PetResponse = {
     pets: Pet[];
-    lastDateLost?: string;
+    nextCursor?: {
+        lastId?: string;
+        lastDateLost?: string;
+    } | null
 }
 
 export type GetPetsOptions = {
     limit?: number;
+    lastId?: string;
     lastDateLost?: string;
     status: PetFilter;
 }

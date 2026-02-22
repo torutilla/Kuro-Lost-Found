@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { AppError } from "../utils/errors.js";
-import { ZodError, z } from "zod/v3";
-function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
+import { AppError } from "../index.js";
+import { ZodError } from "zod/v3";
+export function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
     if (err instanceof AppError) {
         return res.status(err.code).json({ message: err.message });
     }
@@ -17,4 +17,3 @@ function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunc
     });
 }
 
-export default errorMiddleware;

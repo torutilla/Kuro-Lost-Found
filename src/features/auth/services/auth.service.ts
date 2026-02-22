@@ -2,10 +2,9 @@ import TokenService from "./token.service.js";
 import PasswordService from "./password.service.js";
 import UserModel from "@features/users/models/user.model.js";
 import GoogleAuthService from "./google.auth.service.js";
-import { AppError } from "@shared/utils/errors.js";
+import { AppError } from "@shared/index.js";
 import type { LocalUserInput } from "../types/registerInput.type.js";
 import type { PublicUser } from "@features/users/types/user.type.js";
-import { normalizeEmail, normalizeName } from "@shared/utils/normalize.js";
 export default class AuthService {
 
     static async login(email: string, password: string) {
@@ -34,34 +33,20 @@ export default class AuthService {
         return { accessToken, refreshToken, user: publicUser }
     }
 
-    static async getUserFromId(id: string) {
-        const user = await UserModel.findById(id);
-        if (!user) {
-            throw new AppError("User not found.", 404);
-        }
-        const publicUser: PublicUser = {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            provider: user.provider,
-            avatar: user.avatar,
-        }
-        return publicUser;
-    }
     static async logout(refreshToken: string) {
         await TokenService.revokeRefreshToken(refreshToken);
     }
 
     static async register(input: LocalUserInput) {
-        const normalizedEmail = normalizeEmail(input.email);
-        const normalizedInputName = normalizeName(input.name);
+        const email = input.email;
+        const name = input.name;
 
         const hash = await PasswordService.hash(input.password);
         try {
             const createdUser = await UserModel.createLocalUser({
-                email: normalizedEmail,
+                email: email,
                 password: hash,
-                name: normalizedInputName,
+                name: name,
             });
             const access_token = TokenService.generateAccessToken({ userId: createdUser.id });
             const refresh_token = TokenService.generateRefreshToken({ userId: createdUser.id });
@@ -83,8 +68,8 @@ export default class AuthService {
         if (!profileRes.ok) throw new Error("Failed to get Google user profile");
         const profile = await profileRes.json();
 
-        const normalizedEmail = normalizeEmail(profile.email);
-        const normalizedInputName = normalizeName(profile.name);
+        const email = profile.email;
+        const name = profile.name;
 
         const user = await UserModel.findByProviderId("google", profile.sub);
 
@@ -95,8 +80,8 @@ export default class AuthService {
         }
 
         const createdUser = await UserModel.createOAuthUser({
-            email: normalizedEmail,
-            name: normalizedInputName,
+            email: email,
+            name: name,
             providerId: profile.sub,
         });
 

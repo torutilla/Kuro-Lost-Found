@@ -5,8 +5,9 @@ export const PetParamsSchema = z.object({
 });
 
 export const GetPetsQuerySchema = z.object({
-    page: z.coerce.number().min(1).default(1),
     status: z.enum(["lost", "found", "all"]).default("all"),
+    lastDateLost: z.string().datetime().optional(),
+    lastId: z.string().uuid().optional(),
 }).strict();
 
 export type PetParams = z.infer<typeof PetParamsSchema>;

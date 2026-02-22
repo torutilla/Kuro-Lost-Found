@@ -1,8 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import AuthService from "../services/auth.service.js";
-import { accessTokenConfig, refreshTokenConfig } from "@shared/utils/cookieConfig.js";
+import { accessTokenConfig, refreshTokenConfig } from "@shared/config/cookie.config.js";
+import { SignupType } from "../index.js";
 
-export async function SignupController(req: Request, res: Response, next: NextFunction) {
+export async function SignupController(req: Request<{}, {}, SignupType>, res: Response, next: NextFunction) {
     const { email, password, name } = req.body;
 
     try {

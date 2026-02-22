@@ -1,9 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import TokenService from "../../features/auth/services/token.service.js";
-import type { UserPayload } from "../types/express.js";
-import { AppError } from "../utils/errors.js";
+import TokenService from "@features/auth/services/token.service.js";
+import { AppError, UserPayload } from "../index.js";
 
-export default function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export function authMiddleware(req: Request, res: Response, next: NextFunction) {
     try {
         const { access_token } = req.cookies;
         if (!access_token) {

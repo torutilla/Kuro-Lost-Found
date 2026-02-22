@@ -1,8 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { AppError } from "@shared/utils/errors.js";
-import type { UserPayload } from "@shared/types/express.js";
 import TokenService from "../services/token.service.js";
-import { accessTokenConfig, refreshTokenConfig } from "@shared/utils/cookieConfig.js";
+import { accessTokenConfig, refreshTokenConfig, UserPayload, AppError } from "@shared/index.js";
 
 function refreshController(req: Request, res: Response, next: NextFunction) {
     try {

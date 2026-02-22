@@ -1,5 +1,5 @@
 import { pool } from "@/db.js";
-import { Pet, PetResponse, GetPetsOptions } from "../types/pets.type.js";
+import { Pet, PetResponse, GetPetsOptions } from "../index.js";
 import { QueryResult } from "pg";
 
 export default class PetModel {
@@ -7,6 +7,7 @@ export default class PetModel {
     static async getPets({
         limit = 10,
         lastDateLost,
+        lastId,
         status = "all" }: GetPetsOptions
     ): Promise<PetResponse> {
         let params: any[] = [limit];
@@ -16,29 +17,33 @@ export default class PetModel {
             params.push(status);
             conditions.push(`status = $${params.length}`);
         }
-        if (lastDateLost) {
-            params.push(lastDateLost);
-            conditions.push(`date_lost < $${params.length}`);
+
+        if (lastDateLost && lastId) {
+            params.push(lastDateLost, lastId);
+            conditions.push(`(date_lost, id) < ($${params.length - 1}, $${params.length})`);
         }
 
-        let baseQuery =
-            `SELECT *
-            FROM pets
+        let baseQuery = `
+        SELECT * FROM pets 
+        ${conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : ""}
+        ORDER BY date_lost DESC, id DESC 
+        LIMIT $1
         `;
-        if (conditions.length > 0) {
-            baseQuery += " WHERE " + conditions.join(" AND ");
-        }
-        baseQuery += ` ORDER BY date_lost DESC LIMIT $1`;
 
         const res: QueryResult<Pet> = await pool.query(baseQuery, params);
 
-        const lastDate = res.rows[res.rows.length - 1]?.date_lost;
+        const lastRow = res.rows[res.rows.length - 1];
 
-        return { pets: res.rows, lastDateLost: lastDate };
+        return {
+            pets: res.rows, nextCursor: lastRow ? {
+                lastDateLost: lastRow.date_lost,
+                lastId: lastRow.id
+            } : null
+        };
 
     }
 
-    static async addLostPet(pet: Pet): Promise<string | null> {
+    static async addPet(pet: Pet): Promise<string | null> {
         const result: QueryResult<Pet> = await pool.query(`
             INSERT INTO pets (name, type, breed, color, description, image_url, 
             last_seen_location, date_lost)
