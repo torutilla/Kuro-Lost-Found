@@ -5,6 +5,7 @@ import GoogleAuthService from "./google.auth.service.js";
 import { AppError } from "@shared/index.js";
 import type { LocalUserInput } from "../types/registerInput.type.js";
 import type { PublicUser } from "@features/users/types/user.type.js";
+import UserService from "@features/users/services/user.service.js";
 export default class AuthService {
 
     static async login(email: string, password: string) {
@@ -23,13 +24,7 @@ export default class AuthService {
 
         const accessToken = TokenService.generateAccessToken({ userId: user.id });
         const refreshToken = TokenService.generateRefreshToken({ userId: user.id });
-        const publicUser: PublicUser = {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            provider: user.provider,
-            avatar: user.avatar,
-        }
+        const publicUser: PublicUser = UserService.convertToPublic(user)
         return { accessToken, refreshToken, user: publicUser }
     }
 

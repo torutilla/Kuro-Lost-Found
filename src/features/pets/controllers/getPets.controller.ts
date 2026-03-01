@@ -1,5 +1,5 @@
 import PetService from "../services/pets.service.js";
-import { GetPetsQuery, PetParams } from "../index.js";
+import { GetPetsQuery, GetPetParams } from "../index.js";
 import { createHandler } from "@shared/utils/request.util.js";
 
 export const getPetsController = createHandler<{}, {}, GetPetsQuery>(async (req, res) => {
@@ -14,7 +14,7 @@ export const getPetsController = createHandler<{}, {}, GetPetsQuery>(async (req,
     res.json(result);
 });
 
-export const getPetByIdController = createHandler<PetParams>(async (req, res) => {
+export const getPetByIdController = createHandler<GetPetParams>(async (req, res) => {
     const { id } = req.params;
     const pet = await PetService.findPet(id);
     res.json(pet);

@@ -6,7 +6,7 @@ import signupRouter from "@features/auth/routes/signup.js"
 import userRouter from "@features/users/routes/users.js";
 import oauthRouter from "@features/auth/routes/oauth.js";
 import refreshRouter from "@features/auth/routes/refresh.route.js";
-import errorMiddleware from "@shared/middleware/error.middleware.js";
+import { errorMiddleware } from "@shared/middleware/index.js";
 import petsRouter from "@features/pets/routes/pets.route.js";
 import { env } from "@shared/config/env.js";
 const app = express();

@@ -1,6 +1,6 @@
-import { AppError } from "@shared/utils/errors.js";
+import { AppError } from "@shared/index.js";
 import PetModel from "../models/pets.model.js";
-import { GetPetsOptions, Pet, PetFilter } from "../types/pets.type.js";
+import { GetPetsOptions, PetRequest } from "../index.js";
 
 export default class PetService {
     static async getPets(options: GetPetsOptions) {
@@ -8,7 +8,7 @@ export default class PetService {
         return pets;
     }
 
-    static async addPet(pet: Pet) {
+    static async addPet(pet: PetRequest) {
         const petId = await PetModel.addPet(pet);
         if (!petId) throw new Error("Cannot add pet");
 

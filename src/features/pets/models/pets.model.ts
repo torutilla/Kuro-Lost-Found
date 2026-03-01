@@ -1,5 +1,5 @@
 import { pool } from "@/db.js";
-import { Pet, PetResponse, GetPetsOptions } from "../index.js";
+import { Pet, PetResponse, GetPetsOptions, PetRequest } from "../index.js";
 import { QueryResult } from "pg";
 
 export default class PetModel {
@@ -43,11 +43,11 @@ export default class PetModel {
 
     }
 
-    static async addPet(pet: Pet): Promise<string | null> {
+    static async addPet(pet: PetRequest): Promise<string | null> {
         const result: QueryResult<Pet> = await pool.query(`
             INSERT INTO pets (name, type, breed, color, description, image_url, 
-            last_seen_location, date_lost)
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8)
+            last_seen_location, date_lost, user_id)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING id
             `,
             [
@@ -59,6 +59,7 @@ export default class PetModel {
                 pet.image_url,
                 pet.last_seen_location,
                 pet.date_lost,
+                pet.user_id,
             ]);
         return result.rows[0]?.id ?? null;
     }
