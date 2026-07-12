@@ -1,6 +1,6 @@
-import app from "./app.js";
-import { env } from "@shared/config/env.js";
+import { server } from "./app.js";
+import { env } from "@/config/env.js";
 const PORT = env.PORT;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`listening to ${PORT}`);
 })

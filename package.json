@@ -23,6 +23,8 @@
     "module-alias": "^2.3.4",
     "pg": "^8.18.0",
     "postgres": "^3.4.8",
+    "socket.io": "^4.8.3",
+    "wkx": "^0.5.0",
     "zod": "^4.3.6"
   },
   "scripts": {
@@ -33,6 +35,9 @@
   "_moduleAliases": {
     "@": "dist",
     "@features": "dist/features",
-    "@shared": "dist/shared"
+    "@shared": "dist/shared",
+    "@config": "dist/config",
+    "@middleware": "dist/middleware",
+    "@sockets": "dist/sockets"
   }
 }

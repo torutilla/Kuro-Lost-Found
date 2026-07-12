@@ -1,8 +1,8 @@
-import { pool } from "@/db.js";
+import { pool } from "@config/db.js";
 import type { GoogleUserInput, LocalUserInput } from "@features/auth/types/registerInput.type.js";
 import type { PublicUser, UserRow } from "../types/user.type.js";
 
-export default class UserModel {
+export default class UserRepository {
 
     static async findById(id: string): Promise<PublicUser | null> {
         const result = await pool.query(

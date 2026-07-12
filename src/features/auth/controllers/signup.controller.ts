@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import AuthService from "../services/auth.service.js";
-import { accessTokenConfig, refreshTokenConfig } from "@shared/config/cookie.config.js";
+import { accessTokenConfig, refreshTokenConfig } from "@/config/cookie.config.js";
 import { SignupType } from "../index.js";
 
 export async function SignupController(req: Request<{}, {}, SignupType>, res: Response, next: NextFunction) {

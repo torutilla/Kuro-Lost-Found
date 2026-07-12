@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import TokenService from "@features/auth/services/token.service.js";
-import { AppError, UserPayload } from "../index.js";
+import { AppError, UserPayload } from "../shared/index.js";
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
     try {

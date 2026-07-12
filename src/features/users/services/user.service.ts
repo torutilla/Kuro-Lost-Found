@@ -1,9 +1,9 @@
 import { AppError } from "@shared/index.js";
-import UserModel from "../models/user.model.js";
+import UserRepository from "../repository/user.model.js";
 import { PublicUser, UserRow } from "../index.js";
 export default class UserService {
     static async getUserFromId(id: string) {
-        const user = await UserModel.findById(id);
+        const user = await UserRepository.findById(id);
         if (!user) {
             throw new AppError("User not found.", 404);
         }

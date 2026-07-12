@@ -1,4 +1,4 @@
-import { env } from "@shared/config/env.js";
+import { env } from "@config/env.js";
 class GoogleAuthService {
     static async exchangeCodeForTokens(code: string) {
         return await fetch("https://oauth2.googleapis.com/token", {

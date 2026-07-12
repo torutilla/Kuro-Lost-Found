@@ -1,24 +1,27 @@
 import { AppError } from "@shared/index.js";
-import PetModel from "../models/pets.model.js";
-import { GetPetsOptions, PetRequest } from "../index.js";
+import PetRepository from "../repository/pets.repository.js";
+import { GetPetsOptions, PetArraySchema, PetRequest, PetResponseSchema } from "../index.js";
+import { getIO } from "@sockets/socketStore.js";
 
 export default class PetService {
+
     static async getPets(options: GetPetsOptions) {
-        const pets = await PetModel.getPets(options);
-        return pets;
+        const pets = await PetRepository.getPets(options);
+        return PetArraySchema.parse(pets);
     }
 
     static async addPet(pet: PetRequest) {
-        const petId = await PetModel.addPet(pet);
-        if (!petId) throw new Error("Cannot add pet");
+        const petRes = await PetRepository.addPet(pet);
+        if (!petRes) throw new Error("Cannot add pet");
 
-        return petId;
+        getIO().emit("pet:added", petRes);
+        return petRes.id;
     }
 
     static async findPet(id: string) {
-        const pet = await PetModel.findPetById(id);
+        const pet = await PetRepository.findPetById(id);
         if (!pet) throw new AppError(`Cannot find pet with id: ${id}`, 404);
 
-        return pet;
+        return PetResponseSchema.parse(pet);
     }
 }

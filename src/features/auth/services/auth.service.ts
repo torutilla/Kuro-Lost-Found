@@ -1,6 +1,6 @@
 import TokenService from "./token.service.js";
 import PasswordService from "./password.service.js";
-import UserModel from "@features/users/models/user.model.js";
+import UserRepository from "@features/users/repository/user.model.js";
 import GoogleAuthService from "./google.auth.service.js";
 import { AppError } from "@shared/index.js";
 import type { LocalUserInput } from "../types/registerInput.type.js";
@@ -9,7 +9,7 @@ import UserService from "@features/users/services/user.service.js";
 export default class AuthService {
 
     static async login(email: string, password: string) {
-        const user = await UserModel.findEmail(email);
+        const user = await UserRepository.findEmail(email);
         if (!user) {
             throw new AppError("Invalid Credentials.", 401);
         }
@@ -38,7 +38,7 @@ export default class AuthService {
 
         const hash = await PasswordService.hash(input.password);
         try {
-            const createdUser = await UserModel.createLocalUser({
+            const createdUser = await UserRepository.createLocalUser({
                 email: email,
                 password: hash,
                 name: name,
@@ -47,7 +47,7 @@ export default class AuthService {
             const refresh_token = TokenService.generateRefreshToken({ userId: createdUser.id });
             return { createdUser, access_token, refresh_token };
         } catch (error) {
-            if (UserModel.isUniqueEmailError(error)) {
+            if (UserRepository.isUniqueEmailError(error)) {
                 throw new AppError("Email already in use.", 409);
             }
             throw error;
@@ -66,7 +66,7 @@ export default class AuthService {
         const email = profile.email;
         const name = profile.name;
 
-        const user = await UserModel.findByProviderId("google", profile.sub);
+        const user = await UserRepository.findByProviderId("google", profile.sub);
 
         if (user) {
             const access_token = TokenService.generateAccessToken({ userId: user.id });
@@ -74,7 +74,7 @@ export default class AuthService {
             return { user, access_token, refresh_token };
         }
 
-        const createdUser = await UserModel.createOAuthUser({
+        const createdUser = await UserRepository.createOAuthUser({
             email: email,
             name: name,
             providerId: profile.sub,

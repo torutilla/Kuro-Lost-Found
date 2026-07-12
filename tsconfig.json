@@ -18,6 +18,9 @@
     "paths": {
       "@features/*": ["./src/features/*"],
       "@shared/*": ["./src/shared/*"],
+      "@config/*": ["./src/config/*"],
+      "@middleware/*": ["./src/middleware/*"],
+      "@sockets/*": ["./src/sockets/*"],
       "@/*": ["./src/*"]
     }
   },

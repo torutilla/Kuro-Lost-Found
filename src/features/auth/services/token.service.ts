@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { env } from "@shared/config/env.js";
+import { env } from "@config/env.js";
 export default class TokenService {
 
     static generateAccessToken(payload: string | object): string {
