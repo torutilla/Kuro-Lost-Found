@@ -24,7 +24,7 @@ export default class UserRepository {
 
     static async createLocalUser({ email, password, name }: LocalUserInput): Promise<PublicUser> {
         const res = await pool.query(
-            `INSERT INTO users (email, password_hash, name, provider)
+            `INSERT INTO users (email, hash, name, provider)
             VALUES ($1, $2, $3, 'local')
             RETURNING id, email, provider, avatar, name`,
             [email, password, name]
