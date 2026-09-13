@@ -1,14 +1,14 @@
 import PetService from "../services/pets.service.js";
 import type { GetPetsQuery, GetPetParams } from "../index.js";
 import { createHandler } from "@shared/utils/request.util.js";
-import { sendSuccess } from "@shared/index.js";
+import { AppError, sendSuccess } from "@shared/index.js";
 
 export const getPetsController = createHandler<{}, {}, GetPetsQuery>(async (req, res) => {
-    const { status, lastDateLost, lastId } = req.query;
+    const { status, lastObservedAt, lastId } = req.query;
     const result = await PetService.getPets(
         {
             status: status,
-            lastDateLost: lastDateLost,
+            lastObservedAt: lastObservedAt,
             lastId: lastId
         }
     );
@@ -20,9 +20,16 @@ export const getPetsController = createHandler<{}, {}, GetPetsQuery>(async (req,
 
 export const getPetByIdController = createHandler<GetPetParams>(async (req, res) => {
     const { id } = req.params;
-    const pet = await PetService.findPet(id);
+    if (!req.user?.userId) throw new AppError("Unauthorized", 401);
+    const pet = await PetService.findPet(id, req.user.userId);
     sendSuccess(res, {
         message: "Pet fetched successfully",
         data: pet,
     });
+});
+
+export const getMyPetsController = createHandler(async (req, res) => {
+    if (!req.user?.userId) throw new AppError("Unauthorized", 401);
+    const pets = await PetService.getPetsOfUser(req.user.userId);
+    sendSuccess(res, { message: "Your pets fetched successfully", data: pets });
 });

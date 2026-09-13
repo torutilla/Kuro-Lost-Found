@@ -1,19 +1,6 @@
 import { pool } from "@config/db.js";
 
 export default class RefreshTokenRepository {
-    static async ensureTable() {
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS refresh_tokens (
-                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                token_hash TEXT NOT NULL UNIQUE,
-                expires_at TIMESTAMPTZ NOT NULL,
-                revoked_at TIMESTAMPTZ,
-                created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-            )
-        `);
-    }
-
     static async create(userId: string, tokenHash: string, expiresAt: Date) {
         await pool.query(
             `INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
