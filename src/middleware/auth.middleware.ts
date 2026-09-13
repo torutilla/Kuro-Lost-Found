@@ -8,8 +8,12 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
         if (!access_token) {
             throw new AppError("No token provided", 401);
         }
-        const payload = TokenService.verifyAccessToken(access_token);
-        req.user = payload as UserPayload;
+        try {
+            const payload = TokenService.verifyAccessToken(access_token);
+            req.user = payload as UserPayload;
+        } catch (_) {
+            throw new AppError("Invalid or expired token", 401);
+        }
         next();
     } catch (err) {
         next(err);

@@ -33,7 +33,8 @@ export const PetSchema = z.object({
 });
 
 export const PetRequestSchema = PetSchema.omit({
-    id: true
+    id: true,
+    user_id: true,
 });
 
 export const cursorSchema = z.object({

@@ -5,7 +5,7 @@ export const validateMiddleware = (schema: ZodTypeAny, source: "body" | "query" 
 
         const result = schema.safeParse(req[source]);
         if (!result.success) {
-            next(result.error);
+            return next(result.error);
         }
 
         if (source === "query" || source === "params") {

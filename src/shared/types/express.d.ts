@@ -1,9 +1,6 @@
 import "express";
+import type { UserPayload } from "./userPayload.type.js";
 
-export type UserPayload = {
-    userId: string;
-    role?: "user" | "admin";
-}
 declare global {
     namespace Express {
         interface Request {

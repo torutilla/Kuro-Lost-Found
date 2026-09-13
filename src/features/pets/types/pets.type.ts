@@ -1,5 +1,9 @@
 
 
+import type { PetRequest } from "../schema/pets.schema.js";
+
+export type PetInsert = PetRequest & { user_id: string };
+
 export type GetPetsOptions = {
     limit?: number;
     lastId?: string;

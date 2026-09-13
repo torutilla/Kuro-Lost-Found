@@ -1,6 +1,6 @@
 import { pool } from "@config/db.js";
-import { Pet, GetPetsOptions, PetRequest, PetArrayResponse } from "../index.js";
-import { QueryResult } from "pg";
+import type { Pet, GetPetsOptions, PetInsert, PetArrayResponse } from "../index.js";
+import type { QueryResult } from "pg";
 
 export default class PetRepository {
 
@@ -42,7 +42,7 @@ export default class PetRepository {
         const lastRow = pets[pets.length - 1];
 
         return {
-            pets: res.rows,
+            pets,
             nextCursor: hasMore && lastRow
                 ? {
                     lastDateLost: lastRow.date_lost,
@@ -53,7 +53,7 @@ export default class PetRepository {
 
     }
 
-    static async addPet(pet: PetRequest): Promise<Pet | null> {
+    static async addPet(pet: PetInsert): Promise<Pet | null> {
         const result: QueryResult<Pet> = await pool.query(`
             INSERT INTO pets (name, type, breed, color, description, image_url, 
             last_seen_location, date_lost, user_id, location_point)

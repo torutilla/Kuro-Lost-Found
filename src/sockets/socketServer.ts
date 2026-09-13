@@ -1,6 +1,6 @@
 import { Server as IOServer } from "socket.io";
 import { Server as HTTPServer } from "http";
-import { env } from "../shared/index.js";
+import { env } from "../config/env.js";
 import registerSockets from "./registerSockets.js";
 import { setIO } from "./socketStore.js";
 export default function initSocket(server: HTTPServer) {

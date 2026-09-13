@@ -1,6 +1,7 @@
 import PetService from "../services/pets.service.js";
-import { GetPetsQuery, GetPetParams } from "../index.js";
+import type { GetPetsQuery, GetPetParams } from "../index.js";
 import { createHandler } from "@shared/utils/request.util.js";
+import { sendSuccess } from "@shared/index.js";
 
 export const getPetsController = createHandler<{}, {}, GetPetsQuery>(async (req, res) => {
     const { status, lastDateLost, lastId } = req.query;
@@ -11,11 +12,17 @@ export const getPetsController = createHandler<{}, {}, GetPetsQuery>(async (req,
             lastId: lastId
         }
     );
-    res.json(result);
+    sendSuccess(res, {
+        message: "Pets fetched successfully",
+        data: result,
+    });
 });
 
 export const getPetByIdController = createHandler<GetPetParams>(async (req, res) => {
     const { id } = req.params;
     const pet = await PetService.findPet(id);
-    res.json(pet);
+    sendSuccess(res, {
+        message: "Pet fetched successfully",
+        data: pet,
+    });
 });

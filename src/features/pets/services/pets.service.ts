@@ -1,6 +1,7 @@
 import { AppError } from "@shared/index.js";
 import PetRepository from "../repository/pets.repository.js";
-import { GetPetsOptions, PetArraySchema, PetRequest, PetResponseSchema } from "../index.js";
+import { PetArraySchema, PetResponseSchema } from "../index.js";
+import type { GetPetsOptions, PetInsert } from "../index.js";
 import { getIO } from "@sockets/socketStore.js";
 
 export default class PetService {
@@ -10,7 +11,7 @@ export default class PetService {
         return PetArraySchema.parse(pets);
     }
 
-    static async addPet(pet: PetRequest) {
+    static async addPet(pet: PetInsert) {
         const petRes = await PetRepository.addPet(pet);
         if (!petRes) throw new Error("Cannot add pet");
 
