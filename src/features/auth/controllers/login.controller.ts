@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import AuthService from "../services/auth.service.js";
-import { accessTokenConfig, refreshTokenConfig } from "@shared/index.js";
-import { LoginType } from "../index.js";
+import { accessTokenConfig, refreshTokenConfig } from "@config/cookie.config.js";
+import type { LoginType } from "../index.js";
+import { sendSuccess } from "@shared/index.js";
 
 
 export default async function LoginController(req: Request<{}, {}, LoginType>, res: Response, next: NextFunction) {
@@ -14,7 +15,10 @@ export default async function LoginController(req: Request<{}, {}, LoginType>, r
 
         res.cookie("refresh_token", login.refreshToken, refreshTokenConfig);
 
-        res.json(login.user);
+        sendSuccess(res, {
+            message: "Logged in successfully",
+            data: login.user,
+        });
     } catch (err) {
         next(err);
     }

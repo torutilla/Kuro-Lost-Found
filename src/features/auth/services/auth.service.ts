@@ -1,6 +1,6 @@
 import TokenService from "./token.service.js";
 import PasswordService from "./password.service.js";
-import UserRepository from "@features/users/repository/user.model.js";
+import UserRepository from "@features/users/repository/users.repository.js";
 import GoogleAuthService from "./google.auth.service.js";
 import { AppError } from "@shared/index.js";
 import type { LocalUserInput } from "../types/registerInput.type.js";
@@ -24,6 +24,7 @@ export default class AuthService {
 
         const accessToken = TokenService.generateAccessToken({ userId: user.id });
         const refreshToken = TokenService.generateRefreshToken({ userId: user.id });
+        await TokenService.persistRefreshToken(user.id, refreshToken);
         const publicUser: PublicUser = UserService.convertToPublic(user)
         return { accessToken, refreshToken, user: publicUser }
     }
@@ -43,9 +44,10 @@ export default class AuthService {
                 password: hash,
                 name: name,
             });
-            const access_token = TokenService.generateAccessToken({ userId: createdUser.id });
-            const refresh_token = TokenService.generateRefreshToken({ userId: createdUser.id });
-            return { createdUser, access_token, refresh_token };
+            const accessToken = TokenService.generateAccessToken({ userId: createdUser.id });
+            const refreshToken = TokenService.generateRefreshToken({ userId: createdUser.id });
+            await TokenService.persistRefreshToken(createdUser.id, refreshToken);
+            return { accessToken, refreshToken, user: createdUser };
         } catch (error) {
             if (UserRepository.isUniqueEmailError(error)) {
                 throw new AppError("Email already in use.", 409);
@@ -69,9 +71,10 @@ export default class AuthService {
         const user = await UserRepository.findByProviderId("google", profile.sub);
 
         if (user) {
-            const access_token = TokenService.generateAccessToken({ userId: user.id });
-            const refresh_token = TokenService.generateRefreshToken({ userId: user.id });
-            return { user, access_token, refresh_token };
+            const accessToken = TokenService.generateAccessToken({ userId: user.id });
+            const refreshToken = TokenService.generateRefreshToken({ userId: user.id });
+            await TokenService.persistRefreshToken(user.id, refreshToken);
+            return { accessToken, refreshToken, user };
         }
 
         const createdUser = await UserRepository.createOAuthUser({
@@ -80,9 +83,10 @@ export default class AuthService {
             providerId: profile.sub,
         });
 
-        const access_token = TokenService.generateAccessToken({ userId: createdUser.id });
-        const refresh_token = TokenService.generateRefreshToken({ userId: createdUser.id });
+        const accessToken = TokenService.generateAccessToken({ userId: createdUser.id });
+        const refreshToken = TokenService.generateRefreshToken({ userId: createdUser.id });
+        await TokenService.persistRefreshToken(createdUser.id, refreshToken);
 
-        return { user: createdUser, access_token, refresh_token };
+        return { accessToken, refreshToken, user: createdUser };
     }
 }
