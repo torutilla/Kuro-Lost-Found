@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { AppError } from "../shared/index.js";
+import  {AppError}  from "../shared/index.js";
 function notFound(
     req: Request,
     res: Response,

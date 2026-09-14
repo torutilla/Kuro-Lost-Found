@@ -7,7 +7,7 @@ import { errorMiddleware } from "@/middleware/index.js";
 import { env } from "@/config/env.js";
 import http from "http";
 import initSocket from "./sockets/socketServer.js";
-import notFound from "./middleware/notFound.js";
+import notFound from "./middleware/notFound.middleware.js";
 
 const app = express();
 app.use(helmet());
@@ -18,7 +18,7 @@ app.use(cors({
     credentials: true,
 }))
 
-app.use('api/v1', apiRoutes)
+app.use('/api/v1', apiRoutes)
 
 app.use(notFound);
 
