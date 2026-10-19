@@ -1,5 +1,13 @@
+/*
+ * `leaflet.css` is imported into its own EARLY cascade layer. Leaflet's rules
+ * (e.g. `.leaflet-container a { color: #0078A8 }`) are unlayered by default,
+ * which would beat every Tailwind utility (they live in `@layer utilities`) —
+ * that is what turned white links inside map popups blue. With the import in
+ * `layer(leaflet)` and declared before Tailwind's layers, utilities win again
+ * while Leaflet keeps its own defaults where we don't override them.
+ */
+@import "leaflet/dist/leaflet.css" layer(leaflet);
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
 
 @theme static {
   --color-primary: #1e3a8a;

@@ -2,13 +2,14 @@ import { Link } from "react-router-dom";
 import PetBadge from "@features/home/components/common/PetBadge.tsx";
 import type { Pet } from "../../home/schema/petSchema.ts";
 import { ArrowForward } from "@mui/icons-material";
+import Image from "@shared/components/common/SkeletonImg.tsx";
 
 /** Compact pet preview rendered inside a Leaflet popup marker. */
 function PetPopup({ pet }: { pet: Pet }) {
   return (
     <div className="w-56">
       <div className="relative mb-3 overflow-hidden rounded-xl">
-        <img
+        <Image
           src={pet.image_url}
           alt={pet.name}
           className="h-28 w-full object-cover"
@@ -33,7 +34,7 @@ function PetPopup({ pet }: { pet: Pet }) {
         View details
         <ArrowForward
           sx={{ fontSize: 14 }}
-          className="transition-transform duration-200 group-hover:translate-x-0.5"
+          className="transition-transform duration-200 group-hover:translate-x-0.5 text-white"
         />
       </Link>
     </div>
@@ -41,4 +42,3 @@ function PetPopup({ pet }: { pet: Pet }) {
 }
 
 export default PetPopup;
-
