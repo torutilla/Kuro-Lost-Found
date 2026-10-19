@@ -33,7 +33,7 @@ export default function Image({
             "absolute inset-0 grid place-items-center",
             status === "loading"
               ? "animate-pulse bg-neutral-200"
-              : "bg-gradient-to-br from-neutral-100 to-neutral-300",
+              : "bg-linear-to-br from-neutral-100 to-neutral-300",
           )}
         >
           {status === "broken" && (

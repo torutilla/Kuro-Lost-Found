@@ -20,15 +20,18 @@ function PetCard({ pet }: PetCardProps) {
 
   // Each card fades up as it mounts, so both the initial load and pets
   // arriving over the socket feel alive.
-  const ref = useGsapContext<HTMLAnchorElement>(({ gsap, root }) => {
-    gsap.from(root, {
-      opacity: 0,
-      y: 18,
-      duration: 0.5,
-      ease: "power2.out",
-      clearProps: "transform",
-    });
-  }, [pet.id]);
+  const ref = useGsapContext<HTMLAnchorElement>(
+    ({ gsap, root }) => {
+      gsap.from(root, {
+        opacity: 0,
+        y: 18,
+        duration: 0.5,
+        ease: "power2.out",
+        clearProps: "transform",
+      });
+    },
+    [pet.id],
+  );
 
   const handleMapClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -59,7 +62,7 @@ function PetCard({ pet }: PetCardProps) {
             src={pet.image_url}
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-black/50 to-transparent" />
           <div className="absolute top-3 right-3">
             <PetBadge status={pet.status} />
           </div>
@@ -106,4 +109,3 @@ function PetCard({ pet }: PetCardProps) {
 }
 
 export default PetCard;
-

@@ -36,7 +36,7 @@ function DesktopSidebar() {
   return (
     <nav
       ref={ref}
-      className="grain hidden lg:flex fixed top-0 left-0 h-full w-56 bg-gradient-to-b from-primary via-secondary to-secondary flex-col py-6 px-4 z-50 shadow-2xl shadow-primary/20"
+      className="grain hidden lg:flex fixed top-0 left-0 h-full w-56 bg-linear-to-b from-primary via-secondary to-secondary flex-col py-6 px-4 z-50 shadow-2xl shadow-primary/20"
     >
       <div className="sidebar-item relative z-1 mb-10">
         <BrandLogo size="md" showWordmark />
@@ -77,4 +77,3 @@ function DesktopSidebar() {
 }
 
 export default DesktopSidebar;
-
