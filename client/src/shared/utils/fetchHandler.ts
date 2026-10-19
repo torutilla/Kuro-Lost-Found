@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../config/api.ts";
+import { apiUrl } from "../config/api.ts";
 
 interface ApiResponse<T> {
     success: boolean;
@@ -11,7 +11,7 @@ export async function fetchHandler<T>(
     reqInit: RequestInit = {},
     retried = false,
 ): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${path}`, {
+    const response = await fetch(apiUrl(path), {
         ...reqInit,
         headers: {
             "Content-Type": "application/json",
@@ -52,7 +52,7 @@ let refreshPromise: Promise<boolean> | null = null;
 
 function refreshToken(): Promise<boolean> {
     if (!refreshPromise) {
-        refreshPromise = fetch(`${API_BASE_URL}api/v1/auth/refresh`, {
+        refreshPromise = fetch(apiUrl("api/v1/auth/refresh"), {
             method: "POST",
             credentials: "include",
         })

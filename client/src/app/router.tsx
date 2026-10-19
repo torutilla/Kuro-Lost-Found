@@ -11,6 +11,7 @@ import Hero from "@features/hero/pages/Hero.tsx";
 import HomeWrapper from "@features/home/pages/HomeWrapper.tsx";
 import InboxPage from "@features/messaging/pages/InboxPage.tsx";
 import ProfilePage from "@features/profile/pages/ProfilePage.tsx";
+import OAuthFailurePage from "@features/auth/pages/OAuthFailurePage.tsx";
 export const router = createBrowserRouter([
   {
     element: <PublicRoute />,
@@ -30,6 +31,12 @@ export const router = createBrowserRouter([
       {
         path: "/forgot-password",
         element: <ForgotPassword />,
+      },
+      {
+        // Friendly Google OAuth failure landing spot (declined consent,
+        // expired state, or provider failure), redirected here by the API.
+        path: "/auth/failed",
+        element: <OAuthFailurePage />,
       },
     ],
   },

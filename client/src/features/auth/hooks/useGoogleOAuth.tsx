@@ -1,13 +1,17 @@
-import type { User } from "@shared/types/user.ts";
-import { fetchHandler } from "@shared/utils/fetchHandler.ts";
-import useAsync from "@shared/hooks/useAsync.tsx";
+import { apiUrl } from "@shared/config/api.ts";
 
+/**
+ * Starts the Google OAuth flow. This MUST be a full browser navigation
+ * (`window.location.assign`), not `fetch` — only a real navigation carries the
+ * browser through Google's cross-origin consent redirect and back to our
+ * API callback (`/api/v1/auth/google/callback`), which then sets the session
+ * cookies and forwards the browser to the app.
+ */
 function useGoogleOAuth() {
-  const { run, loading, error } = useAsync<User>();
-  async function login() {
-    return await run(() => fetchHandler(`api/v1/auth/google`));
+  function login() {
+    window.location.assign(apiUrl("/api/v1/auth/google"));
   }
-  return { login, loading, error };
+  return { login };
 }
 
 export default useGoogleOAuth;
