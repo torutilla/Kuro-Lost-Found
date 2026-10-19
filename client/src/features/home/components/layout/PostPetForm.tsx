@@ -1,6 +1,7 @@
 import TextField from "@shared/components/common/TextField.tsx";
 import usePostPet from "../../hooks/usePostPet.tsx";
 import { PetRequestSchema } from "../../schema/petSchema.ts";
+import { z } from "zod/v3";
 import Button from "@shared/components/common/Button.tsx";
 import MapPicker from "@features/map/components/MapPicker.tsx";
 import { useState } from "react";
@@ -11,15 +12,42 @@ import { Pets, Schedule, Image as ImageIcon } from "@mui/icons-material";
 const selectClass =
   "w-full rounded-lg p-2 bg-neutral-200 border border-neutral-300 focus:ring-1 focus:ring-primary outline-none transition-colors";
 
+const FIELD_LABELS: Record<string, string> = {
+  name: "Pet name",
+  status: "Status",
+  type: "Species",
+  breed: "Breed",
+  color: "Color",
+  description: "Description",
+  image_url: "Photo URL",
+  location_description: "Last seen location",
+  observed_at: "Date last seen",
+  location_point: "Map location",
+};
+
+/** Turn a Zod issue from the shared report schema into a readable form message. */
+function issueToMessage(issue: z.ZodIssue): string {
+  const label = FIELD_LABELS[String(issue.path[0] ?? "")] ?? "Form";
+  if (issue.code === "invalid_type" && (issue.received === "null" || issue.received === "undefined")) {
+    return `${label} is required.`;
+  }
+  return `${label}: ${issue.message}`;
+}
+
 function PostPetForm({
-  authUserId,
   onSuccess,
 }: {
-  authUserId: string;
   onSuccess?: (id: string) => void;
 }) {
   const { postPet, loading, error } = usePostPet();
   const [coords, setCoords] = useState<LatLngTuple | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<string[]>([]);
+
+  const handleCoordsChange = (next: LatLngTuple) => {
+    setCoords(next);
+    setLocationError(null);
+  };
 
   const ref = useGsapContext<HTMLFormElement>(({ gsap }) => {
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -33,11 +61,28 @@ function PostPetForm({
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFieldErrors([]);
+
+    // A report is meaningless without a map location — reject early with a
+    // readable message instead of a silent console log.
+    if (!coords) {
+      setLocationError(
+        "Please pin the exact spot on the map — tap the map to select where the pet was seen.",
+      );
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
 
+    const observedAtRaw = String(formData.get("observed_at") ?? "");
+    if (!observedAtRaw || Number.isNaN(new Date(observedAtRaw).getTime())) {
+      setFieldErrors(["Date last seen: please choose a valid date and time."]);
+      return;
+    }
+
+    // Note: no `user_id` here. The server derives the owner from the
+    // authenticated session.
     const payload = {
-      user_id: authUserId,
       name: formData.get("name"),
       type: formData.get("type"),
       breed: formData.get("breed") || undefined,
@@ -45,28 +90,27 @@ function PostPetForm({
       description: formData.get("description"),
       image_url: formData.get("image_url"),
       status: formData.get("status"),
-      last_seen_location: formData.get("last_seen_location"),
-      location_point: coords
-        ? {
-            lat: coords[0],
-            lng: coords[1],
-          }
-        : null,
-      date_lost: new Date(formData.get("date_lost") as string).toISOString(),
+      location_description: formData.get("location_description"),
+      location_point: {
+        lat: coords[0],
+        lng: coords[1],
+      },
+      observed_at: new Date(observedAtRaw).toISOString(),
     };
 
     const res = PetRequestSchema.safeParse(payload);
 
     if (!res.success) {
-      console.log(res.error.issues);
+      setFieldErrors(res.error.issues.map(issueToMessage));
       return;
     }
 
     try {
       const id = await postPet(res.data);
       onSuccess?.(id);
-    } catch (error) {
-      console.error(error);
+    } catch {
+      // Server/network failures are surfaced through `error` from usePostPet
+      // and rendered below.
     }
   };
 
@@ -145,13 +189,13 @@ function PostPetForm({
         <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2">
           <TextField
             label="Date Last Seen"
-            name="date_lost"
+            name="observed_at"
             type="datetime-local"
             required
           />
           <TextField
             label="Last Seen Location"
-            name="last_seen_location"
+            name="location_description"
             placeholder="e.g. Central Park, NY"
             required
           />
@@ -159,7 +203,15 @@ function PostPetForm({
 
         <div className="mt-2">
           <p className="mb-2 text-sm text-accent">Pin the exact spot</p>
-          <MapPicker value={coords} onChange={setCoords} />
+          <MapPicker value={coords} onChange={handleCoordsChange} />
+          {locationError && (
+            <p
+              role="alert"
+              className="mt-2 rounded-lg bg-error/10 px-3 py-2 text-sm text-error"
+            >
+              {locationError}
+            </p>
+          )}
         </div>
       </section>
 
@@ -192,10 +244,22 @@ function PostPetForm({
         </div>
       </section>
 
-      {error && (
-        <p className="mt-4 rounded-lg bg-error/10 px-4 py-2 text-sm text-error">
-          {error}
-        </p>
+      {(fieldErrors.length > 0 || error) && (
+        <div className="mt-4 space-y-2" role="alert">
+          {fieldErrors.map((message) => (
+            <p
+              key={message}
+              className="rounded-lg bg-error/10 px-4 py-2 text-sm text-error"
+            >
+              {message}
+            </p>
+          ))}
+          {error && (
+            <p className="rounded-lg bg-error/10 px-4 py-2 text-sm text-error">
+              {error}
+            </p>
+          )}
+        </div>
       )}
 
       <div className="post-section mt-6 flex justify-end">

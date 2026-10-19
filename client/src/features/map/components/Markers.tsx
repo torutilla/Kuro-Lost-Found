@@ -25,6 +25,8 @@ const lostSvg = `<svg width="40" height="40" viewBox="0 0 24 24">
 </svg>`;
 const foundSvg = `<svg width="40" height="40" viewBox="0 0 24 24">
   <path
+    stroke="black"
+    stroke-width="0.3"
     d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"
     fill="#22C55E"
   />
@@ -32,9 +34,14 @@ const foundSvg = `<svg width="40" height="40" viewBox="0 0 24 24">
     <circle cx="12" cy="10" r="2"/>
     <circle cx="9" cy="8" r="1"/>
     <circle cx="15" cy="8" r="1"/>
-    <circle cx="10" cy="12" r="1"/>
-    <circle cx="14" cy="12" r="1"/>
+    <circle cx="10.5" cy="6" r="1"/>
+    <circle cx="13" cy="6" r="1"/>
   </g>
+</svg>`;
+
+const neutralSvg = `<svg width="40" height="40" viewBox="0 0 24 24">
+  <path fill="#6B7280" d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/>
+  <circle cx="12" cy="9" r="2.5" fill="white"/>
 </svg>`;
 
 type MarkerIconProps = {
@@ -52,6 +59,9 @@ export const createIcon = (svg: MarkerIconProps) =>
 
 export const statusMarker: Record<string, MarkerIconProps> = {
   current: { img: currentLocationSvg, size: [40, 40], anchor: [20, 20] },
+  draft: { img: neutralSvg, size: [40, 40], anchor: [20, 20] },
   lost: { img: lostSvg, size: [40, 40], anchor: [20, 20] },
   found: { img: foundSvg, size: [40, 40], anchor: [20, 20] },
+  reunited: { img: foundSvg, size: [40, 40], anchor: [20, 20] },
+  archived: { img: neutralSvg, size: [40, 40], anchor: [20, 20] },
 };
