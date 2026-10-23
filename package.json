@@ -1,0 +1,20 @@
+{
+  "name": "kuro",
+  "private": true,
+  "description": "Kuro — A community lost & found pet platform with real-time map-based reports.",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter kuro-app dev\" \"pnpm --filter kuro-server dev\"",
+    "dev:client": "pnpm --filter kuro-app dev",
+    "dev:server": "pnpm --filter kuro-server dev",
+    "build": "pnpm --filter kuro-app build && pnpm --filter kuro-server build",
+    "start": "pnpm --filter kuro-server start",
+    "db:migrate": "pnpm --filter kuro-server db:migrate",
+    "db:seed": "pnpm --filter kuro-server db:seed",
+    "lint": "pnpm --filter kuro-app lint",
+    "preview": "pnpm --filter kuro-app preview"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

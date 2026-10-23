@@ -1,4 +1,5 @@
 {
+  "name": "kuro-server",
   "type": "module",
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

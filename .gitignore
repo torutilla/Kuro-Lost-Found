@@ -2,6 +2,8 @@
 .claude
 .qwen
 
+node_modules
+
 DEPLOYMENT_READINESS.md
 
 skills-lock.json

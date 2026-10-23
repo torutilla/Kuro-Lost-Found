@@ -1,11 +1,3 @@
-/*
- * `leaflet.css` is imported into its own EARLY cascade layer. Leaflet's rules
- * (e.g. `.leaflet-container a { color: #0078A8 }`) are unlayered by default,
- * which would beat every Tailwind utility (they live in `@layer utilities`) —
- * that is what turned white links inside map popups blue. With the import in
- * `layer(leaflet)` and declared before Tailwind's layers, utilities win again
- * while Leaflet keeps its own defaults where we don't override them.
- */
 @import "leaflet/dist/leaflet.css" layer(leaflet);
 @import "tailwindcss";
 
@@ -33,12 +25,7 @@
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/*
- * Tailwind utilities are emitted via `@tailwind utilities`, which is NOT a
- * CSS cascade layer. Any plain rule declared here would therefore beat a
- * utility (e.g. `.glow { position: relative }` overriding `absolute`), so all
- * of our custom CSS lives inside `@layer base` / `@layer components`.
- */
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
@@ -49,7 +36,6 @@
     background-color: var(--color-white);
   }
 
-  /* Fraunces is the display face for headings; body copy stays on Outfit. */
   h1,
   h2,
   h3 {
@@ -61,6 +47,7 @@
   button:hover {
     cursor: pointer;
   }
+
   p::selection,
   h1::selection,
   a::selection {
@@ -75,9 +62,11 @@
   a:hover {
     filter: brightness(0.95);
   }
+
   button:active {
     transform: scale(0.993);
   }
+
   input:focus {
     outline: none;
   }
@@ -112,12 +101,12 @@
     gap: 1.25rem;
     padding: var(--size-lg);
     border-radius: 1.5rem;
-    border: 1px solid
-      color-mix(in srgb, var(--color-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
     box-shadow:
       0 1px 2px rgba(16, 24, 40, 0.04),
       0 24px 60px -18px rgba(30, 58, 138, 0.28);
   }
+
   .auth-card.login {
     grid-template-rows: auto auto auto auto;
   }
@@ -134,25 +123,25 @@
     animation: slide-out-right 0.35s ease-out forwards;
   }
 
-  .loading > * {
+  .loading>* {
     animation: loading-animation 1s ease-in-out infinite both;
   }
 
-  .loading > *:nth-child(1) {
+  .loading>*:nth-child(1) {
     animation-delay: 0s;
   }
-  .loading > *:nth-child(2) {
+
+  .loading>*:nth-child(2) {
     animation-delay: 0.15s;
   }
-  .loading > *:nth-child(3) {
+
+  .loading>*:nth-child(3) {
     animation-delay: 0.3s;
   }
 }
 
 /* ===== Kuro design utilities ===== */
 
-/* Fine grain film texture used on dark surfaces to add depth.
-   The host element must be `relative`; utilities still win over this layer. */
 .grain::after {
   content: "";
   position: absolute;
@@ -164,21 +153,21 @@
   background-size: 3px 3px;
 }
 
-/* Shared "will animate" state so GSAP can fade elements in without flashing. */
 [data-reveal] {
   opacity: 0;
 }
 
-/* Masked line used for staggered hero text reveals. */
+
 .reveal-line {
   display: block;
   overflow: hidden;
 }
 
-/* Underline that grows from the left on hover. */
+
 .link-underline {
   position: relative;
 }
+
 .link-underline::after {
   content: "";
   position: absolute;
@@ -191,21 +180,24 @@
   transform-origin: left;
   transition: transform 0.35s var(--ease-out-quint);
 }
+
 .link-underline:hover::after {
   transform: scaleX(1);
 }
 
-/* Pulsing ring for "live" location indicators. */
+
 @keyframes pulse-ring {
   0% {
     transform: scale(0.6);
     opacity: 0.7;
   }
+
   100% {
     transform: scale(1.9);
     opacity: 0;
   }
 }
+
 .pulse-ring::before {
   content: "";
   position: absolute;
@@ -218,11 +210,13 @@
 .dropdown-in {
   animation: dropdown-in 0.18s var(--ease-out-quint) both;
 }
+
 @keyframes dropdown-in {
   from {
     opacity: 0;
     transform: translateY(-6px) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -234,49 +228,58 @@
     opacity: 0;
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
   }
 }
+
 @keyframes slide-out-right {
   from {
     transform: translateX(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(100%);
     opacity: 0;
   }
 }
+
 @keyframes loading-animation {
   0% {
     opacity: 0.4;
     transform: translateY(0%);
   }
+
   50% {
     opacity: 1;
     transform: translateY(-30%);
   }
+
   100% {
     opacity: 0.4;
     transform: translateY(0%);
   }
 }
 
-/* Leaflet popups restyled to match the app's cards. */
+
 .leaflet-popup-content-wrapper {
   border-radius: 1rem;
   padding: 0.15rem;
   box-shadow: 0 18px 40px -18px rgba(16, 24, 40, 0.35);
 }
+
 .leaflet-popup-content {
   margin: 0.75rem;
   font-family: var(--font-sans);
 }
+
 .leaflet-popup-tip {
   box-shadow: none;
 }
+
 .leaflet-container a.leaflet-popup-close-button {
   padding: 8px 8px 0 0;
   color: var(--color-accent);
@@ -287,9 +290,10 @@
     opacity: 1 !important;
     transform: none !important;
   }
+
   .toast.in,
   .toast.out,
-  .loading > *,
+  .loading>*,
   .pulse-ring::before {
     animation: none !important;
   }
