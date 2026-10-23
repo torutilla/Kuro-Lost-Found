@@ -4,12 +4,10 @@ Kuro is a community-driven lost & found pet platform. It lets owners and good Sa
 
 ## Screenshots
 
-```markdown
 ![Home page](./docs/screenshots/home.png)
 ![Map view](./docs/screenshots/map.png)
 ![Report form](./docs/screenshots/report-form1.png)
 ![Report form](./docs/screenshots/report-form2.png)
-```
 
 ---
 
