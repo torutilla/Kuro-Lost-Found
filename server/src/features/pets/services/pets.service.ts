@@ -15,7 +15,7 @@ export default class PetService {
         const petRes = await PetRepository.addPet(pet);
         if (!petRes) throw new Error("Cannot add pet");
 
-        getIO().emit("pet:added", petRes);
+        getIO().emit("pet:created", petRes);
         return petRes.id;
     }
 
