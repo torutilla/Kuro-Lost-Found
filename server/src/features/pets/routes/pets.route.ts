@@ -5,7 +5,7 @@ import { postPetController } from "../controllers/postPet.controller.js";
 import { GetPetsQuerySchema, GetPetParamsSchema, PetRequestSchema, PetStatusUpdateSchema } from "../index.js";
 import { updatePetStatusController } from "../controllers/updatePetStatus.controller.js";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", authMiddleware, validateMiddleware(GetPetsQuerySchema, "query"), getPetsController);
 router.get("/mine", authMiddleware, getMyPetsController);

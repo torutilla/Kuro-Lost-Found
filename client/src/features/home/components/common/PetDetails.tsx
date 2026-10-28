@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Marker } from "react-leaflet";
-import useFetchPets from "../../hooks/useFetchPets.tsx";
-import { PetSchema, type Pet } from "../../schema/petSchema.ts";
+import { type Pet } from "../../schema/petSchema.ts";
+import { fetchHandler } from "@shared/index.ts";
 import PetBadge from "./PetBadge.tsx";
+import { useAuth } from "@features/auth/hooks/useAuth.tsx";
 import Button from "@shared/components/common/Button.tsx";
 import LabeledIcon from "@shared/components/common/LabeledIcon.tsx";
 import Image from "@shared/components/common/SkeletonImg.tsx";
@@ -26,26 +27,71 @@ import {
 import type { LatLngTuple } from "leaflet";
 
 /**
- * Full detail view for a single report. The pet is resolved from the existing
- * `/api/v1/pets` list endpoint, so no extra API surface is required.
+ * Full detail view for a single report, loaded directly from
+ * `GET /api/v1/pets/:id` instead of only scanning the first feed page.
+ * Archived or reunited reports that the viewer doesn't own surface a 404
+ * and render the graceful "not found" state below.
  */
 function PetDetails() {
   const { id } = useParams();
-  const { pets, loading, loadMore } = useFetchPets();
-  const didRun = useRef(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [pet, setPet] = useState<Pet | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [openingConversation, setOpeningConversation] = useState(false);
+
+  const isOwner = pet && user && pet.user_id === user.userId 
+    ? true 
+    : pet && user && pet.user_id === user.id 
+    ? true 
+    : false;
+
+  const handleOpenConversation = async () => {
+    if (!user || isOwner || !pet) return;
+    setOpeningConversation(true);
+    try {
+      const res = await fetchHandler<{ conversationId: string }>(
+        `api/v1/messaging/conversations`,
+        {
+          method: "POST",
+          body: JSON.stringify({ pet_id: pet.id }),
+        }
+      );
+      navigate(`/inbox/${res.conversationId}`);
+    } catch (err) {
+      console.error("Failed to open conversation:", err);
+    } finally {
+      setOpeningConversation(false);
+    }
+  };
+
+  const handleViewOnMap = () => {
+    if (!pet?.location_point) return;
+    navigate(`/home?flyTo=${pet.location_point.lat},${pet.location_point.lng}`);
+  };
 
   useEffect(() => {
-    if (didRun.current) return;
-    didRun.current = true;
-    loadMore().catch(() => {
-      /* surfaced through the empty state below */
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const raw = pets.find((p) => p.id === id);
-  const parsed = raw ? PetSchema.safeParse(raw) : null;
-  const pet: Pet | null = parsed?.success ? parsed.data : null;
+    let cancelled = false;
+    async function loadPet() {
+      try {
+        setError(null);
+        const data = await fetchHandler<Pet>(`api/v1/pets/${id}`);
+        if (cancelled) return;
+        setPet(data);
+      } catch (err) {
+        if (cancelled) return;
+        setPet(null);
+        setError(err instanceof Error ? err.message : "Failed to load report");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    loadPet();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   const ref = useGsapContext<HTMLDivElement>(
     ({ gsap }) => {
@@ -64,7 +110,6 @@ function PetDetails() {
     },
     [pet?.id],
   );
-
   if (loading && !pet) return <LoadingScreen />;
 
   if (!pet) {
@@ -72,7 +117,11 @@ function PetDetails() {
       <EmptyState
         icon={PetsOutlined}
         title="Report not found"
-        description="This pet may have been reunited or the link is out of date."
+        description={
+          error
+            ? error
+            : "This pet may have been reunited, archived, or the link is out of date."
+        }
         action={
           <Link to="/home">
             <Button variant="outline" className="gap-1.5">
@@ -84,7 +133,6 @@ function PetDetails() {
       />
     );
   }
-
   const coords: LatLngTuple | null = pet.location_point
     ? [pet.location_point.lat, pet.location_point.lng]
     : null;
@@ -179,22 +227,23 @@ function PetDetails() {
           )}
 
           <div className="detail-block mt-8 flex flex-wrap gap-3">
-            <Link to="/inbox">
-              <Button className="group gap-2 px-6 py-3">
-                <ChatBubbleOutline fontSize="small" />
-                Message the reporter
-              </Button>
-            </Link>
-            <Link to="/home">
-              <Button
-                variant="outline"
-                className="gap-2 px-6 py-3"
-                color="secondary"
-              >
-                <LocationOn fontSize="small" />
-                View on the map
-              </Button>
-            </Link>
+            <Button
+              disabled={openingConversation || !pet || isOwner}
+              className="group gap-2 px-6 py-3"
+              onClick={handleOpenConversation}
+            >
+              <ChatBubbleOutline fontSize="small" />
+              {isOwner ? "You are the owner" : openingConversation ? "Opening…" : "Message the reporter"}
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-2 px-6 py-3"
+              color="secondary"
+              onClick={handleViewOnMap}
+            >
+              <LocationOn fontSize="small" />
+              View on the map
+            </Button>
           </div>
         </div>
       </div>

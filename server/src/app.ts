@@ -8,8 +8,9 @@ import { env } from "@/config/env.js";
 import http from "http";
 import initSocket from "./sockets/socketServer.js";
 import notFound from "./middleware/notFound.middleware.js";
+import type { Express } from "express";
 
-const app = express();
+const app: Express = express();
 app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());

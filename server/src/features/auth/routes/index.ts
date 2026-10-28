@@ -5,7 +5,7 @@ import signupRouter from "./signup.route.js";
 import refreshRouter from "./refresh.route.js";
 import logoutRouter from "./logout.route.js";
 
-const authRouter = Router();
+const authRouter: Router = Router();
 
 // oauth defines /google and /google/callback itself
 authRouter.use(oauthRouter);

@@ -55,7 +55,7 @@ function DesktopSidebar() {
           <NavItem
             label="Messages"
             icon={<Message />}
-            active={location.pathname === "/inbox"}
+            active={location.pathname === "/inbox" || location.pathname.startsWith("/inbox/")}
             onClick={() => navigate("/inbox")}
           />
         </div>
@@ -70,7 +70,7 @@ function DesktopSidebar() {
       </div>
 
       <div className="sidebar-profile relative z-1">
-        <ProfileTab name={user.name} email={user.email} onLogout={logout} />
+        <ProfileTab name={user?.name ?? ""} email={user?.email ?? ""} onLogout={logout} />
       </div>
     </nav>
   );

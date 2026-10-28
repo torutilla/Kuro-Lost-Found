@@ -6,15 +6,12 @@ import MapController from "./MapController.tsx";
 import { createIcon, statusMarker } from "./Markers.tsx";
 import PetPopup from "./PetPopup.tsx";
 import { useCurrentLocation } from "@shared/context/CurrentLocationProvider.tsx";
-import { useEffect } from "react";
 
 function HomeMap({ center }: { center: LatLngTuple }) {
-  const { markers, setFlyToTarget } = useMapProvider();
+  const { markers } = useMapProvider();
+  // Note: flyTo targeting is handled by Home.tsx via URL params
+  // Do NOT override it here with current location
   const { location } = useCurrentLocation();
-  useEffect(() => {
-    if (!location) return;
-    setFlyToTarget(location);
-  }, [location]);
   return (
     <BaseMap center={center}>
       <MapController />

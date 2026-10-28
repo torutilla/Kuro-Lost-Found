@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { logoutController } from "../controllers/logout.controller.js";
 
-const router = Router();
+const router: Router = Router();
 
 router.post('/', logoutController)
 

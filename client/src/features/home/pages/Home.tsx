@@ -9,13 +9,27 @@ import useSocketEvent from "@shared/hooks/useSocketEvent.tsx";
 import PetDrawer from "../components/layout/PetDrawer.tsx";
 import Button from "../../../shared/components/common/Button.tsx";
 import { Add, LocationSearching } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function Home() {
-  const { pets, loading, loadMore, addPet } = useFetchPets();
+  const [searchParams] = useSearchParams();
+  const { pets, loading, loadMore, error, hasMore, addPet } = useFetchPets();
   const { location } = useCurrentLocation();
   const { setMarkers, setFlyToTarget } = useMapProvider();
   const navigate = useNavigate();
+
+  // Handle fly-to from PetDetails "View on the map"
+  useEffect(() => {
+    const flyTo = searchParams.get("flyTo");
+    if (flyTo) {
+      const [lat, lng] = flyTo.split(",").map(Number);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        setFlyToTarget([lat, lng]);
+        // Clean up the URL without triggering navigation
+        // window.history.replaceState(null, "", window.location.pathname);
+      }
+    }
+  }, [searchParams, setFlyToTarget]);
 
   useSocketEvent({
     event: "pet:created",
@@ -69,6 +83,19 @@ function Home() {
       <HomeMap center={location ?? [14.6507, 121.1029]} />
 
       <PetDrawer pets={pets} />
+
+      {hasMore && (
+        <div className="mt-4 flex justify-center">
+          <Button onClick={loadMore} disabled={loading} className="px-8 py-3">
+            {loading ? "Loading…" : error ? "Retry" : "Load more"}
+          </Button>
+          {error && (
+            <p className="mt-2 text-xs text-center text-error">
+              Failed to load more reports. Check your connection and retry.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
