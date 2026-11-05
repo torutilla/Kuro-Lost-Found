@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@shared/index.ts";
-import LoadingComponent from "./LoadingComponent.tsx";
+// import LoadingComponent from "./LoadingComponent.tsx";
 
 const buttonVariants = cva(
   `min-h-9 rounded-xl p-2 px-4 w-auto shrink-0
@@ -94,8 +94,9 @@ function Button({
       type={type}
       {...props}
       className={cn(buttonVariants({ color, variant }), className)}
+      disabled={disabled}
     >
-      {disabled ? <LoadingComponent /> : children}
+      {children}
     </button>
   );
 }

@@ -1,18 +1,78 @@
 services:
-    server:
-      build: ./server
-      ports:
-        - "8080:8080"
-      depends_on:
-        - postgres
+  db:
+    image: postgis/postgis:17-3.5
+    container_name: kuro-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=kuro_db
+      - POSTGRES_USER=kuro
+      - POSTGRES_PASSWORD=***REMOVED***
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "kuro", "-d", "kuro_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kuro-network
 
-    postgres:
-      image: postgres:17
-      env: 
-    client:
-      build: ./client
-      ports: 
-        - "5173:5173"
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: kuro-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://kuro:***REMOVED***@db:5432/kuro_db
+      - PORT=80
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - CLIENT_URL=${CLIENT_URL}
+      - SERVER_URL=${SERVER_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - kuro-network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+    container_name: kuro-client
+    restart: unless-stopped
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080
+    ports:
+      - "80:5173"
+    networks:
+      - kuro-network
+
+volumes:
+  pg_data:
+
+networks:
+  kuro-network:
+    driver: bridge
+    
+
+    
+       
+    
 
 
     

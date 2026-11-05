@@ -31,7 +31,7 @@ export const PetSchema = z.object({
 
 export const cursorSchema = z.object({
     lastId: z.string().optional(),
-    lastDateLost: z.date(),
+    lastObservedAt: z.date(),
 }).nullable().optional();
 
 export const PetArraySchema = z.object({

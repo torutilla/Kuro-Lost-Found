@@ -1,6 +1,6 @@
-FROM node:24.11.1-alpine
+FROM node:20-alpine
 
-WORKDIR /app/
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -10,6 +10,8 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 8080
+ENV NODE_ENV=production
 
-CMD ["npm", "start"]
+EXPOSE 80
+
+CMD ["sh", "-c", "npm run db:migrate && node dist/server.js"]

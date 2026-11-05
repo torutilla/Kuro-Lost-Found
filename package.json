@@ -10,6 +10,7 @@
     "build": "pnpm --filter kuro-app build && pnpm --filter kuro-server build",
     "start": "pnpm --filter kuro-server start",
     "db:migrate": "pnpm --filter kuro-server db:migrate",
+    "db:down": "pnpm --filter kuro-server db:down",
     "db:seed": "pnpm --filter kuro-server db:seed",
     "lint": "pnpm --filter kuro-app lint",
     "preview": "pnpm --filter kuro-app preview"
