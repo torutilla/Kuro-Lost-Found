@@ -7,16 +7,3 @@ export const pool = new Pool({
     : false,
 });
 
-async function main() {
-  try {
-    const result = await pool.query("SELECT NOW()");
-    console.log("Connected to Database!");
-    console.log(result.rows[0]);
-  } catch (error) {
-    console.error("Connection failed:", error);
-  } finally {
-    await pool.end();
-  }
-}
-
-main();
