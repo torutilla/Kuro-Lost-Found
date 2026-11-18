@@ -1,9 +1,11 @@
 import type { CookieOptions } from "express";
-
+import { env } from "./env.js";
 const baseCookieOptions = {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: env.NODE_ENV === "production"
+        ? "none"
+        : "lax",
+    secure: env.NODE_ENV === "production",
     path: "/",
 } satisfies CookieOptions;
 
