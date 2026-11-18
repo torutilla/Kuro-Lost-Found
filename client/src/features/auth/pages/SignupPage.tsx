@@ -7,7 +7,7 @@ import { saveUserInfo } from "@shared/types/localStorage/userStorage.ts";
 function SignupPage() {
   const navigate = useNavigate();
   const onSuccess = (user: User) => {
-    navigate("/");
+    navigate("/home");
     saveUserInfo(user);
   };
   return (

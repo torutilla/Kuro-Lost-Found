@@ -9,7 +9,7 @@ function usePostLogin() {
     try {
       saveUserInfo(user);
       setUser(user);
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       console.error("Failed to save user info.", error);
     }
