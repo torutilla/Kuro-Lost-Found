@@ -4,15 +4,17 @@ services:
     container_name: kuro-db
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=kuro_db
-      - POSTGRES_USER=kuro
-      - POSTGRES_PASSWORD=***REMOVED***
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "kuro", "-d", "kuro_db"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,14 +31,14 @@ services:
       db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://kuro:***REMOVED***@db:5432/kuro_db
-      - PORT=80
-      - NODE_ENV=production
-      - JWT_SECRET=${JWT_SECRET}
-      - CLIENT_URL=${CLIENT_URL}
-      - SERVER_URL=${SERVER_URL}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: 80
+      NODE_ENV: development
+      JWT_SECRET: ${JWT_SECRET}
+      CLIENT_URL: ${CLIENT_URL}
+      SERVER_URL: ${SERVER_URL}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     ports:
       - "8080:80"
     healthcheck:
@@ -52,11 +54,9 @@ services:
       context: ./client
       dockerfile: Dockerfile
       args:
-        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
     container_name: kuro-client
     restart: unless-stopped
-    environment:
-      - VITE_API_BASE_URL=http://localhost:8080
     ports:
       - "80:5173"
     networks:
@@ -68,11 +68,3 @@ volumes:
 networks:
   kuro-network:
     driver: bridge
-    
-
-    
-       
-    
-
-
-    

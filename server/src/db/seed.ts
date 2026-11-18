@@ -1,14 +1,10 @@
-import "dotenv/config";
+import { env } from "../config/env.js";
+import { pool } from "../config/db.js";
 import bcrypt from "bcrypt";
-import { Pool } from "pg";
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = env.DATABASE_URL;
 if (!databaseUrl) throw new Error("DATABASE_URL is required to run db:seed");
 
-const pool = new Pool({
-    connectionString: databaseUrl,
-    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-});
 
 const users = [
     { email: "alice.demo@kuro.local", name: "Alice Santos", provider: "local", password: "DemoPass123!" },
@@ -61,7 +57,7 @@ const run = async () => {
                     location_description = EXCLUDED.location_description, observed_at = EXCLUDED.observed_at,
                     location_point = EXCLUDED.location_point
             `, [pet.id, userIds.get(pet.owner), pet.name, pet.type, pet.breed, pet.color, pet.description,
-                pet.imageUrl, pet.initialStatus, pet.location, pet.observedAt, pet.lat, pet.lng]);
+            pet.imageUrl, pet.initialStatus, pet.location, pet.observedAt, pet.lat, pet.lng]);
             if (pet.finalStatus !== pet.initialStatus) {
                 await client.query("UPDATE pets SET status = $2 WHERE id = $1", [pet.id, pet.finalStatus]);
             }
